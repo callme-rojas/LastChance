@@ -17,7 +17,7 @@ class Relojes {
 
     public function create() {
         $query = "INSERT INTO " . $this->table_name . " SET nombre=:nombre, marca=:marca, precio=:precio, material_caja=:material_caja, material_correa=:material_correa, descripcion=:descripcion";
-
+        echo $query;
         $stmt = $this->conn->prepare($query);
 
         $this->nombre = htmlspecialchars(strip_tags($this->nombre));

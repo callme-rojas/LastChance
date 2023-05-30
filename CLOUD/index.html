@@ -98,7 +98,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit">Crear</button>
+                    <button type="submit" onclick(crearReloj())>Crear</button>
                 </div>
             </form>
         </div>
@@ -162,9 +162,9 @@
                 });
         }
 
-        function crearReloj(event) {
-            event.preventDefault(); // Evitar el envío predeterminado del formulario
-
+        function crearReloj() {
+            //event.preventDefault(); // Evitar el envío predeterminado del formulario
+            alert ("No funciona");
             const nombre = document.getElementById('nombre').value;
             const marca = document.getElementById('marca').value;
             const precio = document.getElementById('precio').value;
