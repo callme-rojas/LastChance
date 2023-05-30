@@ -2,7 +2,7 @@
 class Database {
     private $host = "localhost";
     private $db_name = "relojeria";
-    private $username = "franco";
+    private $username = "phpmyadmin";
     private $password = "12345";
     private $conn;
 
