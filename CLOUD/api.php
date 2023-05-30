@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: application/json");
 
-include_once 'db.php';
+include_once 'dp.php';
 include_once 'relojes.php';
 
 $database = new Database();
