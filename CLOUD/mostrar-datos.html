@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <title>Mostrar Datos</title>
+</head>
+<body>
+    <h1>Recetas de Panaderia</h1>
+
+    <div id="recetas-container"></div>
+
+    <button onclick="volver()">Volver</button>
+
+    <script>
+        // Función para cargar y mostrar los datos de las recetas
+        function cargarRecetas() {
+            fetch('api.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener las recetas.');
+                    }
+                    return response.json(); // Convertir la respuesta a JSON
+                })
+                .then(recetas => {
+                    const container = document.querySelector('#recetas-container');
+
+                    // Limpiar el contenedor
+                    container.innerHTML = '';
+
+                    // Recorrer las recetas y mostrar los datos
+                    recetas.forEach(receta => {
+                        const recetaDiv = document.createElement('div');
+                        recetaDiv.classList.add('receta');
+
+                        const nombre = document.createElement('h2');
+                        nombre.textContent = receta.nombre;
+                        recetaDiv.appendChild(nombre);
+
+                        const tipoPan = document.createElement('p');
+                        tipoPan.textContent = 'Tipo de Pan: ' + receta.tipo_pan;
+                        recetaDiv.appendChild(tipoPan);
+
+                        const ingredientes = document.createElement('p');
+                        ingredientes.textContent = 'Ingredientes: ' + receta.ingredientes;
+                        recetaDiv.appendChild(ingredientes);
+
+                        const instrucciones = document.createElement('p');
+                        instrucciones.textContent = 'Instrucciones: ' + receta.instrucciones;
+                        recetaDiv.appendChild(instrucciones);
+
+                        const tiempoPreparacion = document.createElement('p');
+                        tiempoPreparacion.textContent = 'Tiempo de Preparación: ' + receta.tiempo_preparacion;
+                        recetaDiv.appendChild(tiempoPreparacion);
+
+                        const dificultad = document.createElement('p');
+                        dificultad.textContent = 'Dificultad: ' + receta.dificultad;
+                        recetaDiv.appendChild(dificultad);
+
+                        container.appendChild(recetaDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al obtener las recetas:', error);
+                });
+        }
+
+        // Función para volver a la página principal
+        function volver() {
+            window.location.href = 'index.html';
+        }
+
+        // Cargar y mostrar las recetas al cargar la página
+        cargarRecetas();
+
+    </script>
+</body>
+</html>

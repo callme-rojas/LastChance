@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Relojes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .container {
+            width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: inline-block;
+            width: 120px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 300px;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+        }
+
+        .table td:last-child {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CRUD Relojes</h1>
+
+        <div>
+            <h2>Crear Reloj</h2>
+            <form id="create-form">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="marca">Marca:</label>
+                    <input type="text" id="marca" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="precio">Precio:</label>
+                    <input type="text" id="precio" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="material_caja">Material de la Caja:</label>
+                    <input type="text" id="material_caja" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="material_correa">Material de la Correa:</label>
+                    <input type="text" id="material_correa" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción:</label>
+                    <textarea id="descripcion" required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit">Crear</button>
+                </div>
+            </form>
+        </div>
+
+        <div>
+            <h2>Relojes</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Marca</th>
+                        <th>Precio</th>
+                        <th>Material de la Caja</th>
+                        <th>Material de la Correa</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="relojes-table"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const tableBody = document.getElementById('relojes-table');
+        const createForm = document.getElementById('create-form');
+
+        function cargarRelojes() {
+            fetch('api.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener los relojes.');
+                    }
+                    return response.json();
+                })
+                .then(relojes => {
+                    tableBody.innerHTML = '';
+
+                    relojes.forEach(reloj => {
+                        const row = `
+                            <tr>
+                                <td>${reloj.id}</td>
+                                <td>${reloj.nombre}</td>
+                                <td>${reloj.marca}</td>
+                                <td>${reloj.precio}</td>
+                                <td>${reloj.material_caja}</td>
+                                <td>${reloj.material_correa}</td>
+                                <td>${reloj.descripcion}</td>
+                                <td>
+                                    <button onclick="editarReloj(${reloj.id})">Editar</button>
+                                    <button onclick="eliminarReloj(${reloj.id})">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al obtener los relojes:', error);
+                });
+        }
+
+        function crearReloj() {
+            const nombre = document.getElementById('nombre').value;
+            const marca = document.getElementById('marca').value;
+            const precio = document.getElementById('precio').value;
+            const materialCaja = document.getElementById('material_caja').value;
+            const materialCorrea = document.getElementById('material_correa').value;
+            const descripcion = document.getElementById('descripcion').value;
+
+            fetch('api.php', {
+                method: 'POST',
+                body: JSON.stringify({
+                    nombre,
+                    marca,
+                    precio,
+                    material_caja: materialCaja,
+                    material_correa: materialCorrea,
+                    descripcion
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(() => {
+                    createForm.reset();
+                    cargarRelojes();
+                });
+        }
+
+        function editarReloj(id) {
+            fetch(`api.php?id=${id}`)
+                .then(response => response.json())
+                .then(reloj => {
+                    document.getElementById('nombre').value = reloj.nombre;
+                    document.getElementById('marca').value = reloj.marca;
+                    document.getElementById('precio').value = reloj.precio;
+                    document.getElementById('material_caja').value = reloj.material_caja;
+                    document.getElementById('material_correa').value = reloj.material_correa;
+                    document.getElementById('descripcion').value = reloj.descripcion;
+
+                    const submitButton = document.querySelector('#create-form button');
+                    submitButton.innerText = 'Actualizar';
+                    submitButton.onclick = () => actualizarReloj(id);
+                });
+        }
+
+        function actualizarReloj(id) {
+            const nombre = document.getElementById('nombre').value;
+            const marca = document.getElementById('marca').value;
+            const precio = document.getElementById('precio').value;
+            const materialCaja = document.getElementById('material_caja').value;
+            const materialCorrea = document.getElementById('material_correa').value;
+            const descripcion = document.getElementById('descripcion').value;
+
+            fetch(`api.php?id=${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    nombre,
+                    marca,
+                    precio,
+                    material_caja: materialCaja,
+                    material_correa: materialCorrea,
+                    descripcion
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(() => {
+                    createForm.reset();
+
+                    const existingRow = document.querySelector(`#reloj-${id}`);
+
+                    if (existingRow) {
+                        existingRow.innerHTML = `
+                            <td>${id}</td>
+                            <td>${nombre}</td>
+                            <td>${marca}</td>
+                            <td>${precio}</td>
+                            <td>${materialCaja}</td>
+                            <td>${materialCorrea}</td>
+                            <td>${descripcion}</td>
+                            <td>
+                                <button onclick="editarReloj(${id})">Editar</button>
+                                <button onclick="eliminarReloj(${id})">Eliminar</button>
+                            </td>
+                        `;
+                    }
+
+                    cargarRelojes();
+                });
+        }
+
+        function eliminarReloj(id) {
+            fetch(`api.php?id=${id}`, {
+                method: 'DELETE'
+            })
+                .then(() => cargarRelojes());
+        }
+
+        cargarRelojes();
+
+        createForm.addEventListener('submit', event => {
+            event.preventDefault();
+            crearReloj();
+        });
+    </script>
+</body>
+</html>
