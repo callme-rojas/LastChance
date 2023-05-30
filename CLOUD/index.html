@@ -163,39 +163,40 @@
         }
 
         function crearReloj(event) {
-        event.preventDefault(); // Evitar el envío predeterminado del formulario
+            event.preventDefault(); // Evitar el envío predeterminado del formulario
 
-        const nombre = document.getElementById('nombre').value;
-        const marca = document.getElementById('marca').value;
-        const precio = document.getElementById('precio').value;
-        const materialCaja = document.getElementById('material_caja').value;
-        const materialCorrea = document.getElementById('material_correa').value;
-        const descripcion = document.getElementById('descripcion').value;
+            const nombre = document.getElementById('nombre').value;
+            const marca = document.getElementById('marca').value;
+            const precio = document.getElementById('precio').value;
+            const materialCaja = document.getElementById('material_caja').value;
+            const materialCorrea = document.getElementById('material_correa').value;
+            const descripcion = document.getElementById('descripcion').value;
 
-        fetch('api.php', {
-            method: 'POST',
-            body: JSON.stringify({
-                nombre,
-                marca,
-                precio,
-                material_caja: materialCaja,
-                material_correa: materialCorrea,
-                descripcion
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // Verificar la respuesta en la consola
-                createForm.reset();
-                cargarRelojes();
+            fetch('api.php', {
+                method: 'POST',
+                body: JSON.stringify({
+                    nombre,
+                    marca,
+                    precio,
+                    material_caja: materialCaja,
+                    material_correa: materialCorrea,
+                    descripcion
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
-            .catch(error => {
-                console.error('Error al crear el reloj:', error);
-            });
-    }
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Verificar la respuesta en la consola
+                    createForm.reset();
+                    cargarRelojes();
+                })
+                .catch(error => {
+                    console.error('Error al crear el reloj:', error);
+                });
+        }
+
 
         function editarReloj(id) {
             fetch(`api.php?id=${id}`)
@@ -270,10 +271,7 @@
 
         cargarRelojes();
 
-        createForm.addEventListener('submit', event => {
-            event.preventDefault();
-            crearReloj();
-        });
+        createForm.addEventListener('submit', crearReloj);
     </script>
 </body>
 </html>
