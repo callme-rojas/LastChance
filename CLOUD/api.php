@@ -23,23 +23,24 @@ switch ($method) {
         echo json_encode($result);
         break;
 
-    case 'POST':
-        // Crear un nuevo reloj
-        $data = json_decode(file_get_contents("php://input"));
-
-        $reloj->nombre = $data->nombre;
-        $reloj->marca = $data->marca;
-        $reloj->precio = $data->precio;
-        $reloj->material_caja = $data->material_caja;
-        $reloj->material_correa = $data->material_correa;
-        $reloj->descripcion = $data->descripcion;
-
-        if ($reloj->create()) {
-            echo json_encode(array("message" => "Reloj creado con éxito."));
-        } else {
-            echo json_encode(array("message" => "No se pudo crear el reloj."));
-        }
-        break;
+        case 'POST':
+            // Crear un nuevo reloj
+            $data = json_decode(file_get_contents("php://input"));
+    
+            $reloj->nombre = $data->nombre;
+            $reloj->marca = $data->marca;
+            $reloj->precio = $data->precio;
+            $reloj->material_caja = $data->material_caja;
+            $reloj->material_correa = $data->material_correa;
+            $reloj->descripcion = $data->descripcion;
+    
+            if ($reloj->create()) {
+                $result = $reloj->readAll(); // Obtener la lista actualizada de relojes
+                echo json_encode(array("message" => "Reloj creado con éxito.", "relojes" => $result));
+            } else {
+                echo json_encode(array("message" => "No se pudo crear el reloj."));
+            }
+            break;
 
     case 'PUT':
         $id = isset($_GET['id']) ? $_GET['id'] : null;
